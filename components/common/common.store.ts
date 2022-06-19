@@ -1,11 +1,12 @@
-
 import create from 'zustand'
 import { PaletteMode } from '@mui/material'
 import { ethers } from 'ethers'
 
 export type Network1 = 'mainnet' | 'testnet'
 export type Step1 = 1 | 2 | 3
-export const defaultProvider = new ethers.providers.JsonRpcProvider('https://rpc.testnet.fantom.network')
+export const defaultProvider = new ethers.providers.JsonRpcProvider(
+  'https://rpc.testnet.fantom.network'
+)
 interface globalState {
   provider: ethers.providers.Web3Provider | ethers.providers.JsonRpcProvider
   setProvider: (_provider: globalState['provider']) => void
@@ -28,7 +29,7 @@ interface globalState {
 
 const storeCommon = create<globalState>((set) => ({
   provider: defaultProvider,
-  setProvider: (_provider) => set(state => ({provider: _provider})),
+  setProvider: (_provider) => set((state) => ({ provider: _provider })),
   chainId: 0,
   setChainId: (_id) => set((state) => ({ chainId: _id })),
 

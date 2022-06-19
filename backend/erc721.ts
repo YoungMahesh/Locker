@@ -5,7 +5,7 @@ const erc721Abi = [
   'function name() public view returns (string memory)',
   'function symbol() public view returns (string memory)',
   'function isApprovedForAll(address owner, address operator) external view returns (bool)',
-  'function setApprovalForAll(address operator, bool _approved) external'
+  'function setApprovalForAll(address operator, bool _approved) external',
 ]
 
 export const getErc721Contract = (signer: Signer, tokenAddr: string) => {
@@ -15,7 +15,7 @@ export const getErc721Contract = (signer: Signer, tokenAddr: string) => {
 export const getErc721Approval = async (
   tokenAddr: string,
   operator: string,
-  signer: Signer,
+  signer: Signer
 ) => {
   try {
     const currUser = await signer.getAddress()

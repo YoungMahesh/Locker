@@ -1,31 +1,23 @@
-import { useEffect, useState } from "react"
-import Stack from "@mui/material/Stack"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
-import CircularProgress from "@mui/material/CircularProgress"
-import { ethers } from "ethers"
+import { useEffect, useState } from 'react'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import { ethers } from 'ethers'
 import {
   getUserLockers,
   LockerInfo2,
-  getLockerContractAddr,
   getLockerContract,
-} from "../../backend/locker"
-import storeCommon from "../common/common.store"
+} from '../../backend/locker'
+import storeCommon from '../common/common.store'
 
 export default function MyLocks() {
   const chainId = storeCommon((state) => state.chainId)
-
   const account = storeCommon((state) => state.account)
   const provider = storeCommon((s) => s.provider)
-
-  const [message1, setMessage1] = useState("")
-
   const [isFetching, setIsFetching] = useState(false)
-  const [ethLocks, setEthLocks] = useState<LockerInfo2[]>([])
-  const [erc20Locks, setErc20Locks] = useState<LockerInfo2[]>([])
-  const [erc721Locks, setErc721Locks] = useState<LockerInfo2[]>([])
-  const [erc1155Locks, setErc1155Locks] = useState<LockerInfo2[]>([])
+  const [tokenLocks, setTokenLocks] = useState<LockerInfo2[]>([])
 
   useEffect(() => {
     loadLockers()
@@ -39,22 +31,7 @@ export default function MyLocks() {
         provider.getSigner()
       )
       if (fetchedLockers) {
-        const ethLocks1 = userLockersInfoArr.filter(
-          (obj) => obj.tokenType === "eth"
-        )
-        setEthLocks(ethLocks1)
-        const erc20Locks1 = userLockersInfoArr.filter(
-          (obj) => obj.tokenType === "erc20"
-        )
-        setErc20Locks(erc20Locks1)
-        const erc721Locks1 = userLockersInfoArr.filter(
-          (obj) => obj.tokenType === "erc721"
-        )
-        setErc721Locks(erc721Locks1)
-        const erc1155Locks1 = userLockersInfoArr.filter(
-          (obj) => obj.tokenType === "erc1155"
-        )
-        setErc1155Locks(erc1155Locks1)
+        setTokenLocks(userLockersInfoArr)
       }
       setIsFetching(false)
     }
@@ -65,14 +42,13 @@ export default function MyLocks() {
     const date1 = new Date()
     date1.setTime(timeInMilliSeconds)
     return date1.toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     })
   }
 
   const withdrawTokens = async (_lockerId: ethers.BigNumber) => {
-    setMessage1("")
     try {
       const signer = provider.getSigner()
       const chainId = await signer.getChainId()
@@ -82,50 +58,38 @@ export default function MyLocks() {
       loadLockers()
     } catch (err) {
       console.log(err)
-      setMessage1("Problem occurred while unlocking tokens.")
+      alert('Problem occurred while unlocking tokens.')
     }
   }
 
-  const ETHLocks = () => {
+  const Lockers = () => {
     return (
       <>
-        {ethLocks.length > 0 ? (
-          ethLocks.map(
+        {tokenLocks.length > 0 ? (
+          tokenLocks.map(
             (
-              {
-                tokenOwner,
-                tokenType,
-                tokenAddress,
-                tokenId,
-                tokenAmount,
-                lockTime,
-                unlockTime,
-                isWithdrawn,
-                tokenName,
-                tokenSymbol,
-                tokenAmount2,
-                lockerId,
-              },
+              { lockTime, unlockTime, tokenSymbol, tokenAmount2, lockerId },
               idx
             ) => (
               <Box
                 key={idx}
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                flexWrap="wrap"
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  margin: '10px 10px 0px 0',
+                }}
               >
                 <Box>
-                  <Typography>{`Amount: ${tokenAmount2} ether`}</Typography>
+                  <Typography>{`Amount: ${tokenAmount2}  ${
+                    tokenSymbol.length ? tokenSymbol : 'FTM'
+                  }`}</Typography>
 
-                  <Typography>
-                    {`Locked ${getDate(lockTime)} . Unlocks ${getDate(
-                      unlockTime
-                    )}`}
-                  </Typography>
+                  <Typography>{`Locked ${getDate(lockTime)}`}</Typography>
+                  <Typography>{`Unlocks ${getDate(unlockTime)}`}</Typography>
                 </Box>
 
-                <Box>
+                <Box sx={{ alignSelf: 'flex-end', margin: '7px' }}>
                   <Button
                     variant="contained"
                     onClick={() => withdrawTokens(lockerId)}
@@ -138,179 +102,7 @@ export default function MyLocks() {
             )
           )
         ) : (
-          <Typography>No Ether Locked.</Typography>
-        )}
-      </>
-    )
-  }
-  const ERC20Locks = () => {
-    return (
-      <>
-        {erc20Locks.length > 0 ? (
-          erc20Locks.map(
-            (
-              {
-                tokenOwner,
-                tokenType,
-                tokenAddress,
-                tokenId,
-                tokenAmount,
-                lockTime,
-                unlockTime,
-                isWithdrawn,
-                tokenName,
-                tokenSymbol,
-                tokenAmount2,
-                lockerId,
-              },
-              idx
-            ) => (
-              <Box
-                key={idx}
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                flexWrap="wrap"
-              >
-                <Box>
-                  <Typography>
-                    {`${tokenName} - ${tokenAmount2} ${tokenSymbol}`}
-                  </Typography>
-                  <Typography>
-                    Locked {getDate(lockTime)} . Unlocks {getDate(unlockTime)}
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={() => withdrawTokens(lockerId)}
-                    disabled={Date.now() < unlockTime.toNumber() * 1000}
-                  >
-                    Withdraw
-                  </Button>
-                </Box>
-              </Box>
-            )
-          )
-        ) : (
-          <Typography>No ERC20 Tokens Locked.</Typography>
-        )}
-      </>
-    )
-  }
-
-  const ERC721Locks = () => {
-    return (
-      <>
-        {erc721Locks.length > 0 ? (
-          erc721Locks.map(
-            (
-              {
-                tokenOwner,
-                tokenType,
-                tokenAddress,
-                tokenId,
-                tokenAmount,
-                lockTime,
-                unlockTime,
-                isWithdrawn,
-                tokenName,
-                tokenSymbol,
-                tokenAmount2,
-                lockerId,
-              },
-              idx
-            ) => (
-              <Box
-                key={idx}
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                flexWrap="wrap"
-              >
-                <Box>
-                  <p>
-                    {tokenName} - Id: {tokenId.toString()} Symbol: {tokenSymbol}
-                  </p>
-                  <p>
-                    Locked {getDate(lockTime)} . Unlocks {getDate(unlockTime)}
-                  </p>
-                </Box>
-
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={() => withdrawTokens(lockerId)}
-                    disabled={Date.now() < unlockTime.toNumber() * 1000}
-                  >
-                    Withdraw
-                  </Button>
-                </Box>
-              </Box>
-            )
-          )
-        ) : (
-          <Typography>No ERC721 Tokens Locked.</Typography>
-        )}
-      </>
-    )
-  }
-
-  const ERC1155Locks = () => {
-    return (
-      <>
-        {erc1155Locks.length > 0 ? (
-          erc1155Locks.map(
-            (
-              {
-                tokenOwner,
-                tokenType,
-                tokenAddress,
-                tokenId,
-                tokenAmount,
-                lockTime,
-                unlockTime,
-                isWithdrawn,
-                tokenName,
-                tokenSymbol,
-                tokenAmount2,
-                lockerId,
-              },
-              idx
-            ) => (
-              <Box
-                key={idx}
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                flexWrap="wrap"
-              >
-                <Box>
-                  <p>
-                    {tokenName} - Id: {tokenId.toString()} Amount:{" "}
-                    {tokenAmount2.toString()}
-                  </p>
-                  <p>TokenAddress: {tokenAddress}</p>
-                  <p>
-                    Locked {getDate(lockTime)} . Unlocks {getDate(unlockTime)}
-                  </p>
-                </Box>
-
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={() => withdrawTokens(lockerId)}
-                    disabled={Date.now() < unlockTime.toNumber() * 1000}
-                  >
-                    Withdraw
-                  </Button>
-                </Box>
-              </Box>
-            )
-          )
-        ) : (
-          <Typography>No ERC1155 Tokens Locked.</Typography>
+          <Typography>No Tokens Locked.</Typography>
         )}
       </>
     )
@@ -322,24 +114,9 @@ export default function MyLocks() {
         <Typography variant="h5" mt={4}>
           My Locks
         </Typography>
-        <Box>
-          <Typography variant="h6">ETHER</Typography>
-          {isFetching ? <CircularProgress /> : <ETHLocks />}
-        </Box>
-        <Box>
-          <Typography variant="h6">ERC20 Tokens</Typography>
-          {isFetching ? <CircularProgress /> : <ERC20Locks />}
-        </Box>
-        <Box>
-          <Typography variant="h6">ERC721 Tokens</Typography>
-          {isFetching ? <CircularProgress /> : <ERC721Locks />}
-        </Box>
-        <Box>
-          <Typography variant="h6">ERC1155 Tokens</Typography>
-          {isFetching ? <CircularProgress /> : <ERC1155Locks />}
-        </Box>
+
+        {isFetching ? <CircularProgress /> : <Lockers />}
       </Stack>
     </>
   )
 }
-

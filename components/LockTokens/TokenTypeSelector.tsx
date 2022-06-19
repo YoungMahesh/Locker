@@ -4,8 +4,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-} from "@mui/material"
-import { TokenTypes1 } from "../../backend/utils"
+} from '@mui/material'
+import { TokenTypes1 } from '../../backend/utils'
 
 export default function TokenTypeSelector({
   tokenType,
@@ -16,7 +16,6 @@ export default function TokenTypeSelector({
 }) {
   return (
     <FormControl component="fieldset">
-  
       <RadioGroup
         row
         aria-label="gender"

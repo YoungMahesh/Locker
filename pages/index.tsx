@@ -1,15 +1,15 @@
-import Head from "next/head"
-import { ReactElement } from "react"
-import ConnectWallet from "../components/common/ConnectWallet"
-import Box from "@mui/material/Box"
-import Layout from "../components/common/Layout"
-import LockTokens from "../components/LockTokens/LockTokens"
-import MyLocks from "../components/mylocks/MyLocks"
-import storeCommon from "../components/common/common.store"
-import { Typography } from "@mui/material"
+import Head from 'next/head'
+import { ReactElement } from 'react'
+import ConnectWallet from '../components/common/ConnectWallet'
+import Box from '@mui/material/Box'
+import Layout from '../components/common/Layout'
+import LockTokens from '../components/LockTokens/LockTokens'
+import MyLocks from '../components/mylocks/MyLocks'
+import storeCommon from '../components/common/common.store'
+import { Typography } from '@mui/material'
 
 const Home = () => {
-  const account = storeCommon(s => s.account)
+  const account = storeCommon((s) => s.account)
   return (
     <>
       <Head>
@@ -22,17 +22,19 @@ const Home = () => {
 
       <Box
         sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-around",
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-around',
         }}
       >
         <LockTokens />
 
-        {account.length ? <MyLocks /> : null }
+        {account.length ? <MyLocks /> : null}
       </Box>
 
-      <Typography sx={{margin: '30px'}} variant="h6" align='center'>Supported Networks: Fantom Testnet</Typography>
+      <Typography sx={{ margin: '30px' }} variant="h6" align="center">
+        Supported Networks: Fantom Testnet
+      </Typography>
     </>
   )
 }

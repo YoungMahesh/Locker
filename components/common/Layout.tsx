@@ -1,15 +1,15 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles"
-import { PaletteMode } from "@mui/material"
-import { useMemo } from "react"
-import storeCommon from "./common.store"
-import CssBaseline from "@mui/material/CssBaseline"
-import { ToastContainer } from "react-toastify"
-import Backdrop1 from "./Backdrop1"
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { PaletteMode } from '@mui/material'
+import { useMemo } from 'react'
+import storeCommon from './common.store'
+import CssBaseline from '@mui/material/CssBaseline'
+import { ToastContainer } from 'react-toastify'
+import Backdrop1 from './Backdrop1'
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
-    ...(mode === "light" ? {} : {}),
+    ...(mode === 'light' ? {} : {}),
   },
 })
 

@@ -1,9 +1,10 @@
-import Box from "@mui/material/Box"
-import React, { useEffect, useMemo } from "react"
-import Button1 from "./Button1"
-import storeCommon from "./common.store"
-import { ethers } from "ethers"
-import Web3Modal from "web3modal"
+import Box from '@mui/material/Box'
+import React, { useEffect, useMemo } from 'react'
+import Button1 from './Button1'
+import storeCommon from './common.store'
+import { ethers } from 'ethers'
+import Web3Modal from 'web3modal'
+import { Typography } from '@mui/material'
 
 declare global {
   interface Window {
@@ -12,20 +13,18 @@ declare global {
 }
 
 export default function ConnectWallet() {
-  
-  const provider = storeCommon(s => s.provider)
-  const setProvider = storeCommon(s => s.setProvider)
-  const setAccount = storeCommon(s => s.setAccount)
-  const account = storeCommon(s => s.account)
-  const setChainId = storeCommon(s => s.setChainId)
-
+  const provider = storeCommon((s) => s.provider)
+  const setProvider = storeCommon((s) => s.setProvider)
+  const setAccount = storeCommon((s) => s.setAccount)
+  const account = storeCommon((s) => s.account)
+  const setChainId = storeCommon((s) => s.setChainId)
 
   const web3Modal: any = useMemo(() => {
     if (typeof window === 'undefined') return
     return new Web3Modal({
-        cacheProvider: true,
-        providerOptions: {},
-      })
+      cacheProvider: true,
+      providerOptions: {},
+    })
   }, [])
 
   const connectWallet = async () => {
@@ -47,12 +46,10 @@ export default function ConnectWallet() {
 
   const disconnect = async () => {
     await web3Modal.clearCachedProvider()
-    setAccount("")
+    setAccount('')
   }
 
-
   useEffect(() => {
-    
     if (provider?.on) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts) setAccount(accounts[0])
@@ -62,15 +59,15 @@ export default function ConnectWallet() {
         setChainId(_hexChainId)
       }
 
-      provider.on("accountsChanged", handleAccountsChanged)
-      provider.on("chainChanged", handleChainChanged)
-      provider.on("disconnect", disconnect)
+      provider.on('accountsChanged', handleAccountsChanged)
+      provider.on('chainChanged', handleChainChanged)
+      provider.on('disconnect', disconnect)
 
       return () => {
         if (provider.removeListener) {
-          provider.removeListener("accountsChanged", handleAccountsChanged)
-          provider.removeListener("chainChanged", handleChainChanged)
-          provider.removeListener("disconnect", disconnect)
+          provider.removeListener('accountsChanged', handleAccountsChanged)
+          provider.removeListener('chainChanged', handleChainChanged)
+          provider.removeListener('disconnect', disconnect)
         }
       }
     }
@@ -79,13 +76,14 @@ export default function ConnectWallet() {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: { xs: "center", md: "flex-end" },
-        alignItems: "center",
-        margin: "50px 0",
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: { xs: 'center', md: 'space-between' },
+        alignItems: 'center',
+        margin: '10px 10px 40px 10px',
       }}
     >
+      <Typography variant="h4">Blockchain Locker</Typography>
       <Box>
         {account.length > 0 ? (
           <Button1
@@ -99,7 +97,7 @@ export default function ConnectWallet() {
             onClick={connectWallet}
             colorType="pink"
             sizeType={2}
-            title={"Connect Wallet"}
+            title={'Connect Wallet'}
           />
         )}
       </Box>

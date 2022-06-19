@@ -1,7 +1,14 @@
+import { ethers } from 'ethers'
+import { BNF } from './web3Provider'
+
 export type TokenTypes1 = 'ERC721' | 'ERC20' | 'ETH' | 'ERC1155'
 
-import { ethers } from 'ethers'
-import { BN } from './web3Provider'
+export const tokenTypeOf = {
+  ETH: 1,
+  ERC20: 2,
+  ERC721: 3,
+  ERC1155: 4,
+}
 
 export const chainIdsTable = {
   HARMONY: 1666600000,
@@ -21,7 +28,7 @@ export const messagesTable = {
   APPROVAL_PROBLEM: 'Problem occurred while approval',
   LOCK_PROBLEM: 'Problem occurred while locking tokens',
   FAUCET_PROBLEM: 'Error occurred while sending tokens',
-  INVALID_TOKENADDRESS: 'Invalid Token Address'
+  INVALID_TOKENADDRESS: 'Invalid Token Address',
 }
 
 export const btnTextTable = {
@@ -32,7 +39,7 @@ export const btnTextTable = {
   LOCKING: 'Locking...',
   GET_ERC20: 'Get 300 Tokens',
   GET_ERC721: 'Get 3 Tokens',
-  GET_ERC1155: 'Get 1000 Tokens'
+  GET_ERC1155: 'Get 1000 Tokens',
 }
 
 export const multisenderTable = {
@@ -44,7 +51,7 @@ export const multisenderTable = {
 0xeEa2269aac3D0F614Ad9813Aa8243898E2EeE2e1,3`,
   REC_ID_AMT_TXT: 'Recipient,TokenId,Amount',
   REC_ID_AMT_VAL: `0xd47e77851537557d22eaB0A9179D69C99D98A8be,2,11
-0xeEa2269aac3D0F614Ad9813Aa8243898E2EeE2e1,3,13`
+0xeEa2269aac3D0F614Ad9813Aa8243898E2EeE2e1,3,13`,
 }
 
 export const processRecipientData = (
@@ -71,7 +78,7 @@ export const processRecipientData = (
       for (let i = 0; i < recipientDataArr.length; i++) {
         const [currRecipient, currId] = recipientDataArr[i].trim().split(',')
         recipientsArr.push(currRecipient)
-        tokenIdsArr.push(BN(currId))
+        tokenIdsArr.push(BNF(currId))
       }
       return { done: true, recipientsArr, tokenIdsArr, tokenAmountsInWeiArr }
     } else if (tokenType === 'erc1155') {
@@ -80,8 +87,8 @@ export const processRecipientData = (
           .trim()
           .split(',')
         recipientsArr.push(currRecipient)
-        tokenIdsArr.push(BN(currId))
-        tokenAmountsInWeiArr.push(BN(currAmount))
+        tokenIdsArr.push(BNF(currId))
+        tokenAmountsInWeiArr.push(BNF(currAmount))
       }
       return { done: true, recipientsArr, tokenIdsArr, tokenAmountsInWeiArr }
     }
@@ -90,7 +97,6 @@ export const processRecipientData = (
     return { done: false, recipientsArr, tokenIdsArr, tokenAmountsInWeiArr }
   }
 }
-
 
 export const currTimeInSec = () => {
   return Math.floor(Date.now() / 1000)

@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 
 const erc1155Abi = [
   'function isApprovedForAll(address account, address operator) external view returns (bool)',
-  'function setApprovalForAll(address operator, bool approved) external'
+  'function setApprovalForAll(address operator, bool approved) external',
 ]
 
 export const getErc1155Contract = (
@@ -18,7 +18,6 @@ export const getErc1155Approval = async (
   signer: any
 ) => {
   try {
-
     const currUser = await signer.getAddress()
     const erc1155Contract = getErc1155Contract(tokenAddr, signer)
     const isAlreadyApproved = await erc1155Contract.isApprovedForAll(
